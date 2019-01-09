@@ -1,0 +1,171 @@
+/**
+ * 创建扑克牌类
+ * @author 
+ *
+ */
+public class Card implements Comparable<Card> {
+
+    String num;
+    String type;
+    int  rank;    //rank代表等级，值越大，等级越高        
+    public Card(String type,String num,int rank) {
+        this.num=num;
+        this.type=type;
+        this.rank=rank;
+    }    
+    
+    public Card() {
+        
+    }
+
+    @Override
+    public int compareTo(Card o) {
+         
+        return this.rank-o.rank;      //比较rank值的大小
+    }
+
+
+}
+
+
+/**
+ * 创建玩家类
+ * @author 
+ *
+ */
+public class Player  {
+
+    String id;    
+    String name;
+    List<Card>pCards;   //用于存放玩家手中的牌
+    
+    public Player(String id,String name) {
+        this.id=id;
+        this.name=name;
+        pCards=new ArrayList<Card>();
+    }
+
+}
+
+
+/**
+ * 
+ * @author 
+ *
+ */
+public class CardDemo {
+
+    List<Card>cards;
+    List<Player>players;
+    Player p1;    //玩家
+    Player p2;
+    Card p1max;   //玩家1最大的牌
+    Card p2max;   //玩家2最大的牌
+    Card p1min;   //玩家1最小的牌
+    Card p2min;   //玩家2最小的牌
+//创建扑克牌资源数组
+    String[] CardType=new String[] {"方块","梅花","红桃","黑桃"};  //顺序不可调换，否则会影响大小比较的rank值
+    String[] CardNum=new String[] {"2","3","4","5","6","7","8","9","10","J","Q","K","A"};
+        
+    public CardDemo() {
+        
+        this.cards=new ArrayList<Card>();
+        this.players=new ArrayList<Player>();
+    }    
+    
+//创建扑克牌    
+    public void CreatCard() {
+        
+        System.out.println("---------创建扑克牌-----------");
+        for(int i=0;i<13;i++) {
+            for(int j=0;j<4;j++) {
+             cards.add(new Card(CardType[j],CardNum[i],i*13+j));
+            }
+        }
+        //遍历打印扑克牌资源
+         System.out.println("--------扑克牌创建成功！----------");
+         System.out.print("扑克牌为");
+         for(Card c:cards) { 
+             System.out.print(c.type+c.num+","); 
+         }
+         System.out.println("总共52张");
+    }
+    
+//进行洗牌    
+    public void washCard() {
+    System.out.println("----------开始洗牌--------------");    
+        Collections.shuffle(cards);        //进行洗牌
+    System.out.println("----------洗牌结束-------------");    
+    
+    }
+
+//创建两名玩家
+     public void creatPlayer() {
+        //键盘上输入两名玩家信息      
+        Scanner console=new Scanner(System.in);
+        System.out.println("请输入第一位玩家的ID和姓名：");
+        System.out.println("请输入ID");
+        String id1=console.next(); 
+        System.out.println("请输入姓名：");
+        String name1=console.next();
+        p1=new Player(id1, name1);
+        players.add(p1);
+        System.out.println("请输入第二位玩家的ID和姓名：");
+        System.out.println("请输入ID");
+        String id2=console.next(); 
+        System.out.println("请输入姓名：");
+        String name2=console.next();
+        p2=new Player(id2, name2);
+        players.add(p2);
+        System.out.println("欢迎玩家："+p1.name); 
+        System.out.println("欢迎玩家："+p2.name); 
+     }
+     
+ //进行发牌
+     public void distrubiteCard() {
+        System.out.println("---------开始发牌------------"); 
+        p1.pCards.add(cards.get(0));
+        System.out.println("----玩家："+p1.name+"-拿牌------");
+        p2.pCards.add(cards.get(1));
+        System.out.println("----玩家："+p2.name+"-拿牌------");
+        p1.pCards.add(cards.get(2));
+        System.out.println("----玩家："+p1.name+"-拿牌------");
+        p2.pCards.add(cards.get(3));
+        System.out.println("----玩家："+p2.name+"-拿牌------");
+        System.out.println("---------发牌结束------------"); 
+     }
+     
+//开始游戏
+     public void playGame() {
+    System.out.println("--------开始游戏-----------");    
+    Collections.sort(p1.pCards);     //对集合pCards进行排序
+    Collections.sort(p2.pCards);
+    p1max=p1.pCards.get(1);    
+    p2max=p2.pCards.get(1);
+    System.out.println(p1.name+"最大的手牌："+p1max.type+p1max.num);   //输出玩家1的最大手牌
+    System.out.println(p2.name+"最大的手牌："+p2max.type+p2max.num);   //输出玩家2的最大手牌
+    if(p1max.rank>p2max.rank)
+        {  System.out.println("-----玩家"+p1.name+"获胜！-------");  }
+    else    
+        {  System.out.println("-----玩家"+p2.name+"获胜！--------");  }
+    //输出玩家各自的手牌
+    System.out.println("-------玩家各自的手牌为：----------");
+    p1min=p1.pCards.get(0);
+    p2min=p2.pCards.get(0);
+    //打印两名玩家各自手上的两张牌
+    System.out.println(p1.name+":"+p1max.type+p1max.num+","+p1min.type+p1min.num);
+    System.out.println(p2.name+":"+p2max.type+p2max.num+","+p2min.type+p2min.num);
+    System.out.println("--------游戏结束-----------");          
+     }
+     
+//主函数    
+    public static void main(String[] args) {
+        CardDemo cd=new CardDemo();
+        cd.CreatCard();          //创建扑克牌
+        cd.washCard();           //洗牌
+        cd.creatPlayer();        //创建玩家
+        cd.distrubiteCard();     //进行发牌
+        cd.playGame();           //开始游戏
+    }
+
+}
